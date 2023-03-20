@@ -1,2 +1,7 @@
 # project-game-gondraz
-dự án game unity cá nhân 
+dự án game unity cá nhân gondraz
+
+
+
+
+
