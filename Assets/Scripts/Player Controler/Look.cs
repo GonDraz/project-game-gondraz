@@ -40,7 +40,7 @@ public class Look : MonoBehaviour
     private void SetX()
     {
         float inputX = Input.GetAxis("Mouse X") * xSensitivity * Time.deltaTime;
-        Quaternion abj = Quaternion.AngleAxis(inputX, -Vector3.up);
+        Quaternion abj = Quaternion.AngleAxis(inputX, -Vector3.down);
         Quaternion delta = player.localRotation * abj;
 
         player.localRotation = delta;
