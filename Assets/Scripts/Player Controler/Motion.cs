@@ -8,6 +8,8 @@ public class Motion : MonoBehaviour
     [SerializeField] private float spintModifier;
     [SerializeField] private float jumpForce;
     [SerializeField] private Camera normalCam;
+    [SerializeField] private Transform groundDetector;
+    [SerializeField] private LayerMask ground;
 
     private Rigidbody rb;
 
@@ -32,8 +34,9 @@ public class Motion : MonoBehaviour
         bool jump = Input.GetKeyDown(KeyCode.Space);
 
         //states
-        bool isJumping = jump;
-        bool isSprinting = sprint && moveY > 0;
+        bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.1f, ground);
+        bool isJumping = jump && isGrounded;
+        bool isSprinting = sprint && moveY > 0 && !isJumping && isGrounded;
 
         //jumping
         if (isJumping)
@@ -46,7 +49,11 @@ public class Motion : MonoBehaviour
         direction.Normalize();
         float adjustedSpeed = speed;
         if (isSprinting) adjustedSpeed *= spintModifier;
-        rb.velocity = adjustedSpeed * Time.deltaTime * transform.TransformDirection(direction);
+
+
+        Vector3 targetVelocity = adjustedSpeed * Time.deltaTime * transform.TransformDirection(direction);
+        targetVelocity.y = rb.velocity.y;
+        rb.velocity = targetVelocity;
 
         //field of view
         if (isSprinting)
