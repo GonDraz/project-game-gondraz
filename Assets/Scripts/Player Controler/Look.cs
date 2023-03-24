@@ -1,14 +1,17 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Look : MonoBehaviour
+public class Look : MonoBehaviourPunCallbacks
 {
-    public static bool cursorLocked = true;
+    #region Variables
 
+    public static bool cursorLocked = true;
 
     [SerializeField] private Transform player;
     [SerializeField] private Transform cams;
+    [SerializeField] private Transform weapon;
 
     [SerializeField] private float xSensitivity;
     [SerializeField] private float ySensitivity;
@@ -16,17 +19,26 @@ public class Look : MonoBehaviour
 
     private Quaternion camCenter;
 
+    #endregion
+
+    #region MonoBehaviour Callbacks
     private void Start()
     {
         camCenter = cams.localRotation;
     }
     private void Update()
     {
+        if (!photonView.IsMine) return;
+
         SetY();
         SetX();
 
         UpdateCursorLock();
     }
+
+    #endregion
+
+    #region Private Methods
     private void SetY()
     {
         float inputY = Input.GetAxis("Mouse Y") * ySensitivity * Time.deltaTime;
@@ -35,6 +47,7 @@ public class Look : MonoBehaviour
         if (Quaternion.Angle(camCenter, delta) < maxAngle)
         {
             cams.localRotation = delta;
+            weapon.localRotation = delta;
         }
     }
     private void SetX()
@@ -61,5 +74,6 @@ public class Look : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Escape)) { cursorLocked = true; }
         }
     }
+    #endregion
 
 }
